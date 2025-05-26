@@ -1,2 +1,109 @@
-# PBL
-PBL es una agencia de publicidad digital especializada en campañas efectivas para YouTubers, creadores de contenido y marcas emergentes. Conectamos ideas con audiencias a través de estrategias creativas y anuncios en plataformas como YouTube.
+// src/App.jsx
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+
+function App() {
+  const isAuthenticated = localStorage.getItem('auth');
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route
+          path="/dashboard"
+          element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
+        />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
+
+// src/pages/Home.jsx
+import { Link } from 'react-router-dom';
+
+export default function Home() {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white">
+      <h1 className="text-4xl font-bold mb-6">Bienvenido a PBL</h1>
+      <div className="space-x-4">
+        <Link to="/login" className="px-4 py-2 bg-red-500 text-white rounded">Iniciar sesión</Link>
+        <Link to="/register" className="px-4 py-2 bg-gray-800 text-white rounded">Registrarse</Link>
+      </div>
+    </div>
+  );
+}
+
+// src/pages/Login.jsx
+import { useNavigate } from 'react-router-dom';
+
+export default function Login() {
+  const navigate = useNavigate();
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    localStorage.setItem('auth', 'true');
+    navigate('/dashboard');
+  };
+
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <form onSubmit={handleLogin} className="bg-white p-6 rounded shadow-md w-80">
+        <h2 className="text-2xl mb-4 font-semibold text-center">Iniciar sesión</h2>
+        <input type="email" placeholder="Correo" required className="mb-3 w-full px-3 py-2 border rounded" />
+        <input type="password" placeholder="Contraseña" required className="mb-4 w-full px-3 py-2 border rounded" />
+        <button type="submit" className="w-full bg-red-500 text-white py-2 rounded">Entrar</button>
+      </form>
+    </div>
+  );
+}
+
+// src/pages/Register.jsx
+import { useNavigate } from 'react-router-dom';
+
+export default function Register() {
+  const navigate = useNavigate();
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+    localStorage.setItem('auth', 'true');
+    navigate('/dashboard');
+  };
+
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <form onSubmit={handleRegister} className="bg-white p-6 rounded shadow-md w-80">
+        <h2 className="text-2xl mb-4 font-semibold text-center">Registrarse</h2>
+        <input type="text" placeholder="Nombre" required className="mb-3 w-full px-3 py-2 border rounded" />
+        <input type="email" placeholder="Correo" required className="mb-3 w-full px-3 py-2 border rounded" />
+        <input type="password" placeholder="Contraseña" required className="mb-4 w-full px-3 py-2 border rounded" />
+        <button type="submit" className="w-full bg-gray-800 text-white py-2 rounded">Crear cuenta</button>
+      </form>
+    </div>
+  );
+}
+
+// src/pages/Dashboard.jsx
+import { useNavigate } from 'react-router-dom';
+
+export default function Dashboard() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('auth');
+    navigate('/');
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white">
+      <h1 className="text-3xl font-bold mb-4">Bienvenido a tu panel</h1>
+      <button onClick={handleLogout} className="px-4 py-2 bg-red-500 text-white rounded">Cerrar sesión</button>
+    </div>
+  );
+}
